@@ -8,11 +8,12 @@ from model import MainModel,build_res_unet,lab_to_rgb
 
 fps = 24
 sec = 290
-skipsec=260
+skipsec=285
 
+#update to your video and model path
 model_path="./model/gen200_m20.pth"
 video_path="./movie/video5.mp4"
-
+pathout='./output_img'
 
 fourcc = cv2.VideoWriter_fourcc(*'mp4v')
 
@@ -38,7 +39,7 @@ if __name__ == '__main__':
     success,image = vidcap.read()
     height, width, channels = image.shape
     if not demo:
-      video = cv2.VideoWriter('color_video5_out.mp4', fourcc, float(fps), (width, height))
+      video = cv2.VideoWriter(pathout+'/color_video5_out.mp4', fourcc, float(fps), (width, height))
 
     for i in range (fps*sec):
       success,image = vidcap.read()
@@ -64,9 +65,9 @@ if __name__ == '__main__':
             plt.show()
           else:
             img2 = Image.fromarray(img_n, 'RGB')
-            img2.save('holtinmy.png')
-            img3 = cv2.imread('holtinmy.png')
-            print(i)
+            img2.save(pathout+'/holtinmy.png')
+            img3 = cv2.imread(pathout+'/holtinmy.png')
+            print("writing frame %d" % i)
             video.write(img3)
     if not demo:
       video.release()

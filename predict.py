@@ -11,18 +11,20 @@ from torchvision import transforms
 from model import MainModel,build_res_unet,lab_to_rgb
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 compare=True
 display=False
 export=True
 
-imgpath ="./predict_img"
+#change to your input/output images and model path
+imgpath ="./input_img"
 modelpath="./model/gen200_m20.pth"
-pathOut="./export"
+pathOut="./output_img"
 
 paths = glob.glob(imgpath + "/*.jpg")
-print("length")
-print(len(paths))
-output_num=round(len(paths)*0.1)
+print("Total number of image to predict: %d" %len(paths))
+
+output_num=round(len(paths))
 np.random.seed()
 paths_subset = np.random.choice(paths, output_num, replace=False) 
 count=0
@@ -53,13 +55,13 @@ if __name__ == '__main__':
         if compare:
 
             img2 = Image.fromarray(img_n, 'RGB')
-            img2.save('tmp.jpg')
-            colorized_img = cv2.imread('tmp.jpg')
+            img2.save(pathOut+'/tmp.jpg')
+            colorized_img = cv2.imread(pathOut+'/tmp.jpg')
             ori_img = cv2.imread(link)
             image1_lab = cv2.cvtColor(ori_img, cv2.COLOR_RGB2Lab)
             image2_lab = cv2.cvtColor(colorized_img, cv2.COLOR_RGB2Lab)
             delta_E = colour.delta_E(image1_lab, image2_lab)
-            print(np.mean(delta_E))
+            print("the color different of image %d is %f" %(count, np.mean(delta_E)))
 
         try:
             
@@ -76,3 +78,6 @@ if __name__ == '__main__':
 
         except Exception:
             pass
+
+    if export:
+      print("All colorized images exported")

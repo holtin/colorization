@@ -14,9 +14,10 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(device)
 ds_path ='./movie_dataset'
 old_mod_path="./model/gen200_m20.pth"
-new_mod_path="./model/gen200_m25.pth"
+new_mod_path="./model/gen200_m21.pth"
 ds_size=8800
 SIZE = 256
+epochs=1
 
 class ColorizationDataset(Dataset):
     def __init__(self, paths, split='train'):
@@ -99,5 +100,5 @@ model.load_state_dict(
             map_location=device
         )
     )
-train_model(model, train_dl, 5,200)
+train_model(model, train_dl, epochs,100)
 torch.save(model.state_dict(), new_mod_path)
